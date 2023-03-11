@@ -4,7 +4,7 @@
     <!-- <router-view></router-view> -->
     <div style="width: 900px; height: 550px; box-shadow: 0 0 20px 0 #30cfd0; border-radius: 5px; display: flex; overflow: hidden">
       <div style="width: 60px; background-color: #333; display: flex; flex-direction: column; align-items: center">
-        <el-image style="width: 40px; height: 40px; margin-top: 20px; cursor: pointer" src="https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg" fit="fit"></el-image>
+        <el-image style="width: 40px; height: 40px; margin-top: 20px; cursor: pointer" src="http://rraqz99qm.hn-bkt.clouddn.com/R-C.png?e=1678441486&token=d0ux_HXMA9iRwofw9DVL45lYl9QvrIzlo9e8kHU8:yHR0RTk_w--dVzkaMOCy_m8bHEM=" fit="fit"></el-image>
         <div style="margin-top: 20px">
           <el-menu :default-active="defaultActive" style="background: none" active-text-color="#FF7800" router>
             <el-menu-item index="chat">
