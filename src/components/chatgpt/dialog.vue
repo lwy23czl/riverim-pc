@@ -35,6 +35,11 @@ export default {
   computed: {
     ...mapGetters(['objectChat', 'msgList', 'basicUserInfo'])
   },
+  mounted() {
+    this.$nextTick(() => {
+      this.$refs.scrollbar.wrap.scrollTop = this.$refs.scrollbar.wrap.scrollHeight
+    })
+  },
   watch: {
     msgList() {
       this.$nextTick(() => {

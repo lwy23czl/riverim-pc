@@ -21,6 +21,6 @@ app.$on('loginSuccess', (id) => {
   let ws = 'ws://localhost:8001/websocket/chat/' + id
   console.log(ws)
   app.$socket = new WebSocket(ws)
-  app.$router.push('/')
+  app.$router.push('/chat')
 })
 app.$mount('#app')

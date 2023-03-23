@@ -28,7 +28,7 @@ export default {
       setMsgList: 'setMsgList'
     }),
     clickCart(item) {
-      // console.log(111)
+      console.log(item)
       this.setObjectChat(item)
       this.getMsgList(item.objectId)
     },

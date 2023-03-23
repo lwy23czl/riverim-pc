@@ -36,8 +36,13 @@
 </template>
 
 <script>
+import api from '@/api'
+import axios from 'axios'
+import { listSearchMixin } from '@/mixin'
 import leftIndex from './leftIndex.vue'
+import { mapGetters, mapMutations } from 'vuex'
 export default {
+  mixins: [listSearchMixin],
   data() {
     return {}
   },
@@ -47,10 +52,42 @@ export default {
   computed: {
     defaultActive: function () {
       return this.$route.path.replace('/', '')
-    }
+    },
+    ...mapGetters['basicUserInfo']
   },
-  created() {},
-  methods: {}
+  created() {
+    this.getBasicUserInfo()
+  },
+  mounted() {
+    // this.newWebSocket()
+  },
+  methods: {
+    ...mapMutations({
+      setBasicUserInfo: 'setBasicUserInfo'
+    }),
+    /* newWebSocket() {
+      let ws = 'ws://localhost:8001/websocket/chat/' + this.basicUserInfo.id
+      this.$root.$socket = new WebSocket(ws)
+    } */
+    async getBasicUserInfo() {
+      console.log('set')
+      /* let params = {
+        url: api.getBasicUserInfo,
+        method: 'get'
+      } */
+      let res = await axios.get(api.getBasicUserInfo)
+      if (res.success) {
+        console.log(1)
+        this.setBasicUserInfo(res.data)
+      }
+      /* this.sendReq(params, (res) => {
+        console.log(1)
+        if (res.success) {
+          this.setBasicUserInfo(res.data)
+        }
+      }) */
+    }
+  }
 }
 </script>
 

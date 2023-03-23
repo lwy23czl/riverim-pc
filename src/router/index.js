@@ -19,7 +19,7 @@ const routes = [
     path: '/',
     name: 'home',
     component: home,
-    redirect: { name: 'chat' },
+    redirect: { name: 'login' },
     children: [
       {
         path: '/chat',

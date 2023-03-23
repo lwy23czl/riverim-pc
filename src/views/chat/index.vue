@@ -29,7 +29,8 @@ export default {
         fromId: '',
         toId: '',
         msg: ''
-      }
+      },
+      id: ''
     }
   },
   components: { Dialog, cardList, chatDialog },
@@ -40,14 +41,28 @@ export default {
     this.getChatObjectCardList()
   },
   mounted() {
+    console.log(this.basicUserInfo.id, 'idM')
+    this.newWebSocket()
     this.$root.$socket.addEventListener('open', this.onOpen)
-    this.$root.$socket.addEventListener('close', () => '已断开')
+    // this.$root.$socket.addEventListener('close', () => '已断开')
     this.$root.$socket.addEventListener('message', this.onMessage)
+  },
+  beforeDestroy() {
+    this.$root.$socket.removeEventListener('open', this.onOpen)
+    // this.$root.$socket.removeEventListener('close')
+    this.$root.$socket.removeEventListener('message', this.onMessage)
   },
   methods: {
     ...mapMutations({
       setMsgList: 'setMsgList'
     }),
+    async newWebSocket() {
+      if (this.basicUserInfo.id) {
+        console.log(this.basicUserInfo.id, 'id')
+        let ws = 'ws://localhost:8001/websocket/chat/' + this.basicUserInfo.id
+        this.$root.$socket = await new WebSocket(ws)
+      }
+    },
     getChatObjectCardList() {
       let params = {
         url: api.getChatObjectCardList,
