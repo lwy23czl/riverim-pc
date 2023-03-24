@@ -23,4 +23,11 @@ app.$on('loginSuccess', (id) => {
   app.$socket = new WebSocket(ws)
   app.$router.push('/chat')
 })
+//创建好友请求类型的全局websocket
+app.$socketApply = null
+app.$on('loginSuccess', (id) => {
+  let ws = 'ws://localhost:8001/websocket/apply/' + id
+  console.log(ws, 'apply')
+  app.$socketApply = new WebSocket(ws)
+})
 app.$mount('#app')

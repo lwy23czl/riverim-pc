@@ -4,7 +4,7 @@
       <el-input v-model="searchText" placeholder="搜索联系人"></el-input>
     </div>
 
-    <div class="list">
+    <div v-loading="loading" class="list">
       <el-scrollbar wrap-class="scrollbar-wrap">
         <div @click="clickItem(contact)" class="item" v-for="(contact, index) in filteredContacts" :key="index">
           <div class="avatar">
@@ -46,6 +46,7 @@ export default {
   mixins: [listSearchMixin],
   data() {
     return {
+      loading: false,
       searchText: '',
       friendObj: '',
       dialogVisible: false, // 对话框是否可见
@@ -61,10 +62,17 @@ export default {
 
   computed: {
     filteredContacts() {
+      this.loading = true
       if (!this.searchText) {
+        if (this.contacts.length > 0) {
+          this.loading = false
+        }
         return this.contacts
       }
       const regex = new RegExp(this.searchText, 'i')
+      if (this.contacts.length > 0) {
+        this.loading = false
+      }
       return this.contacts.filter((contact) => regex.test(contact.nickName))
     }
   },

@@ -13,10 +13,11 @@
             <el-menu-item index="friends">
               <i class="iconfont icon-tongxunlu" style="font-size: 20px"></i>
             </el-menu-item>
-            <el-menu-item index="2">
+            <el-menu-item style="position: relative" index="2">
+              <el-badge :is-dot="applyNew" style="position: absolute; top: -15px; right: 10px"> </el-badge>
               <i class="iconfont icon-a-12" style="font-size: 20px"></i>
             </el-menu-item>
-            <el-menu-item index="3">
+            <el-menu-item index="addFriend">
               <i class="iconfont icon-tianjia1" style="font-size: 20px"></i>
             </el-menu-item>
             <el-menu-item index="4">
@@ -44,7 +45,9 @@ import { mapGetters, mapMutations } from 'vuex'
 export default {
   mixins: [listSearchMixin],
   data() {
-    return {}
+    return {
+      applyNew: false
+    }
   },
   components: {
     leftIndex
@@ -60,15 +63,29 @@ export default {
   },
   mounted() {
     // this.newWebSocket()
+    this.$root.$socketApply.addEventListener('message', this.applyMsg)
   },
   methods: {
     ...mapMutations({
       setBasicUserInfo: 'setBasicUserInfo'
     }),
-    /* newWebSocket() {
-      let ws = 'ws://localhost:8001/websocket/chat/' + this.basicUserInfo.id
-      this.$root.$socket = new WebSocket(ws)
-    } */
+    applyMsg(val) {
+      console.log('监听到apply信息', val)
+      this.applyNew = val.data == 'apply' ? true : false
+    },
+    getUnApplyCount() {
+      this.sendReq(
+        {
+          url: api.getUnApplyCount,
+          method: 'get'
+        },
+        (res) => {
+          if (res.success) {
+            this.applyNew = res.data > 0 ? true : false
+          }
+        }
+      )
+    },
     async getBasicUserInfo() {
       console.log('set')
       /* let params = {
