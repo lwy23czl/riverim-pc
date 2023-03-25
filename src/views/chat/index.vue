@@ -41,8 +41,8 @@ export default {
     this.getChatObjectCardList()
   },
   mounted() {
-    console.log(this.basicUserInfo.id, 'idM')
-    this.newWebSocket()
+    // console.log(this.basicUserInfo.id, 'idM')
+    // this.newWebSocket()
     this.$root.$socket.addEventListener('open', this.onOpen)
     // this.$root.$socket.addEventListener('close', () => '已断开')
     this.$root.$socket.addEventListener('message', this.onMessage)

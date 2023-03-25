@@ -8,6 +8,9 @@ export const api = {
   getFriendList: '/api/friend/list', //获取好友列表
   searchUser: '/api/user/search', //搜索用户
   addFriendRequest: '/api/friendRequest/add', //发送好友请求
-  getUnApplyCount: '/api/friendRequest/applyCount' //获取未处理好友请求数量
+  getUnApplyCount: '/api/friendRequest/applyCount', //获取未处理好友请求数量
+  getFriendRequestList: '/api/friendRequest/list', //获取好友请求列表
+  giveFeedback: '/api/friendRequest/feedback', //对收到的好友请求进行反馈
+  getFeedbackList: '/api/friendRequest/feedbackList' //获取反馈信息列表
 }
 export default api

@@ -29,6 +29,7 @@
         <el-button type="primary" @click="handleClick">{{ buttonText }}</el-button>
       </div>
     </el-dialog>
+    <div v-if="filteredContacts.length == 0" style="font-size: 40px; color: #666; text-align: center; margin: 200px 0">暂无好友</div>
   </div>
 </template>
 
@@ -64,15 +65,11 @@ export default {
     filteredContacts() {
       this.loading = true
       if (!this.searchText) {
-        if (this.contacts.length > 0) {
-          this.loading = false
-        }
+        this.loading = false
         return this.contacts
       }
       const regex = new RegExp(this.searchText, 'i')
-      if (this.contacts.length > 0) {
-        this.loading = false
-      }
+      this.loading = false
       return this.contacts.filter((contact) => regex.test(contact.nickName))
     }
   },
