@@ -3,7 +3,7 @@
     <div @click="clickCart(item)" v-for="(item, index) in chatCardList" :key="item.objectId" class="card" style="cursor: pointer; width: 100%; background-color: #dcdcdd; padding: 15px; display: flex; box-sizing: border-box; position: relative">
       <el-badge style="position: absolute; top: 10px; left: 55px" :value="item.chatNumItem == 0 ? '' : item.chatNumItem" :max="99"></el-badge>
       <img :src="item.imgUrl" style="height: 50px; width: 50px; margin-right: 15px" alt="" />
-      <div style="display: flex; flex-direction: column; justify-content: space-between; flex: 1">
+      <div style="display: flex; flex-direction: column; justify-content: space-between; flex: 1; overflow: hidden; white-space: nowrap; text-overflow: ellipsis">
         <div>{{ item.objectName }}</div>
         <div style="color: #666; font-size: 12px">{{ item.lastContent }}</div>
       </div>
@@ -15,7 +15,7 @@
 <script>
 import api from '@/api'
 import { listSearchMixin } from '@/mixin/index.js'
-import { mapMutations } from 'vuex'
+import { mapMutations, mapGetters } from 'vuex'
 export default {
   props: ['chatCardList'],
   mixins: [listSearchMixin],
@@ -23,7 +23,23 @@ export default {
     return {}
   },
   created() {
-    this.init()
+    // this.setObjectChat({})
+  },
+  watch: {
+    chatCardList: {
+      handler(news) {
+        news.map((item) => {
+          if (item.objectId == this.currentId) {
+            item.chatNumItem = 0
+            this.upNum(item.objectId)
+          }
+        })
+      },
+      deep: true
+    }
+  },
+  computed: {
+    ...mapGetters(['currentId'])
   },
   mounted() {
     this.$root.$socket.addEventListener('message', this.socketMsg)
@@ -31,25 +47,50 @@ export default {
   methods: {
     ...mapMutations({
       setObjectChat: 'setObjectChat',
-      setMsgList: 'setMsgList'
+      setMsgList: 'setMsgList',
+      setChatNum: 'setChatNum',
+      setCurrentId: 'setCurrentId'
     }),
-    init() {
-      this.chatCardList.map((item) => {
-        this.$set(item, 'chatNumItem', 0)
-      })
-    },
     socketMsg(val) {
-      let obj = JSON.parse(val.data)
-      this.chatCardList.map((item) => {
-        if (obj.fromId == item.objectId) {
-          item.chatNumItem++
-        }
-      })
+      this.$emit('reacquire')
     },
     clickCart(item) {
       console.log(item)
+      this.setCurrentId(item.objectId)
       this.setObjectChat(item)
       this.getMsgList(item.objectId)
+      item.chatNumItem = 0
+      this.upNum(item.objectId)
+    },
+    getChatSum() {
+      this.sendReq(
+        {
+          url: api.getChatSum,
+          method: 'get'
+        },
+        (res) => {
+          if (res.success) {
+            this.setChatNum(res.data)
+          }
+        }
+      )
+    },
+    //重新设置未查看聊天记录数量
+    upNum(id) {
+      this.sendReq(
+        {
+          url: api.upChatNumItem,
+          method: 'get',
+          payload: {
+            friendId: id
+          }
+        },
+        (res) => {
+          if (res.success) {
+            this.getChatSum()
+          }
+        }
+      )
     },
     //获取聊天消息列表
     getMsgList(id) {

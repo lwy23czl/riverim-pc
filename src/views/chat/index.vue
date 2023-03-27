@@ -3,12 +3,13 @@
     <div style="width: 250px; border-right: 1px solid #e5e5e5; height: 100%">
       <div></div>
       <el-scrollbar class="el">
-        <cardList :chatCardList="chatCardList"></cardList>
+        <cardList :chatCardList="chatCardList" @reacquire="reacquire"></cardList>
       </el-scrollbar>
     </div>
     <div style="flex: 1">
       <!-- <Dialog></Dialog> -->
-      <chatDialog @new-message="newMessage"></chatDialog>
+      <chatDialog v-if="currentId" @new-message="newMessage"></chatDialog>
+      <div v-else style="height: 100%; font-size: 40px; color: #666; text-align: center; padding-top: 200px">请选择一个聊天对象</div>
     </div>
   </div>
 </template>
@@ -29,13 +30,12 @@ export default {
         fromId: '',
         toId: '',
         msg: ''
-      },
-      id: ''
+      }
     }
   },
   components: { Dialog, cardList, chatDialog },
   computed: {
-    ...mapGetters(['msgList', 'basicUserInfo', 'objectChat'])
+    ...mapGetters(['msgList', 'basicUserInfo', 'objectChat', 'currentId'])
   },
   created() {
     this.getChatObjectCardList()
@@ -51,18 +51,25 @@ export default {
     this.$root.$socket.removeEventListener('open', this.onOpen)
     // this.$root.$socket.removeEventListener('close')
     this.$root.$socket.removeEventListener('message', this.onMessage)
+    this.setCurrentId('')
   },
   methods: {
     ...mapMutations({
-      setMsgList: 'setMsgList'
+      setMsgList: 'setMsgList',
+      setCurrentId: 'setCurrentId'
     }),
-    async newWebSocket() {
+    reacquire() {
+      setTimeout(() => {
+        this.getChatObjectCardList()
+      }, 500)
+    },
+    /* async newWebSocket() {
       if (this.basicUserInfo.id) {
         console.log(this.basicUserInfo.id, 'id')
         let ws = 'ws://localhost:8001/websocket/chat/' + this.basicUserInfo.id
         this.$root.$socket = await new WebSocket(ws)
       }
-    },
+    }, */
     getChatObjectCardList() {
       let params = {
         url: api.getChatObjectCardList,
@@ -90,19 +97,30 @@ export default {
         this.setMsgList(this.msgList)
       }
     },
+    addChatNum(id) {
+      this.sendReq({
+        url: api.addChatNum,
+        method: 'get',
+        payload: {
+          friendId: id
+        }
+      })
+    },
     newMessage(val) {
       this.msgList.push(val)
       this.setMsgList(this.msgList)
       console.log(this.$root.$socket, 'qq')
+      this.addChatNum(this.objectChat.objectId)
       this.msgObj = {
         fromId: val ? this.basicUserInfo.id : this.objectChat.objectId,
         toId: !val ? this.basicUserInfo.id : this.objectChat.objectId,
         msg: val.content
       }
       this.$root.$socket.send(JSON.stringify(this.msgObj))
+      console.log(this.msgObj, 'obj')
     },
     onOpen() {
-      this.$message.success('ws连接成功：' + this.basicUserInfo.id)
+      // this.$message.success('ws连接成功：' + this.basicUserInfo.id)
       // this.$root.$socket.send('hello')
     }
   }

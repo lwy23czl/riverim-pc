@@ -8,7 +8,7 @@
             <div style="line-height: 60px; color: #000; padding-left: 10px">邮箱</div>
           </template>
         </el-input>
-        <el-input @change="login" v-model="passWord" show-password>
+        <el-input @keyup.enter="login" v-model="passWord" show-password>
           <template #prefix>
             <div style="line-height: 60px; color: #000; padding-left: 10px">密码</div>
           </template>

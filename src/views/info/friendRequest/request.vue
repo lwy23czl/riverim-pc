@@ -100,7 +100,15 @@ export default {
             this.$message.success('处理成功！')
             ;(this.isAgree = 0), (this.feedbackMsg = '')
             this.remarks = ''
+            this.dialogVisible = false
             this.getFriendRequestList()
+            //发送webscocket提醒
+            this.$root.$socketApply.send(
+              JSON.stringify({
+                toId: this.objId,
+                type: 'apply'
+              })
+            )
           } else {
             this.$message.error(res.msg)
           }

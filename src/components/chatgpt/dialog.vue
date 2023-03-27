@@ -18,7 +18,7 @@
     </el-scrollbar>
     <div class="chat-input" style="display: flex">
       <el-input v-model="inputMessage" placeholder="请输入消息内容，按回车发送" @keyup.enter.native="sendMessage"></el-input>
-      <el-button type="primary" @click="sendMessage">发送</el-button>
+      <el-button style="background-color: #85c9cd" type="primary" @click="sendMessage">发送</el-button>
     </div>
   </div>
 </template>
@@ -109,7 +109,7 @@ export default {
   margin-right: 10px;
 }
 .meMsg {
-  background-color: #999 !important;
+  background-color: #7bc4c9 !important;
 }
 .chat-avatar img {
   width: 100%;

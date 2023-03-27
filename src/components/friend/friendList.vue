@@ -20,8 +20,8 @@
     <el-dialog :title="title" :visible.sync="dialogVisible">
       <div class="card-container">
         <div v-for="(data, index) in dataList" :key="index" class="card">
-          <h3>{{ data.title }}</h3>
-          <p>{{ data.content }}</p>
+          <h3 style="margin-bottom: 5px">{{ data.title }}</h3>
+          <p style="padding-left: 10px">{{ data.content }}</p>
         </div>
       </div>
 
@@ -54,9 +54,8 @@ export default {
       title: '数据展示', // 对话框标题
       buttonText: '发信息', // 按钮文本
       dataList: [
-        { title: '数据1', content: '这里是数据1的详细内容' },
-        { title: '数据2', content: '这里是数据2的详细内容' },
-        { title: '数据3', content: '这里是数据3的详细内容' }
+        { title: '昵称', content: '这里是数据1的详细内容' },
+        { title: '状态', content: '这里是数据2的详细内容' }
       ] // 展示数据列表
     }
   },
@@ -76,9 +75,13 @@ export default {
   methods: {
     ...mapMutations({
       setObjectChat: 'setObjectChat',
-      setMsgList: 'setMsgList'
+      setMsgList: 'setMsgList',
+      setCurrentId: 'setCurrentId'
     }),
     clickItem(contact) {
+      // console.log(this.dataList[0].content)
+      this.dataList[0].content = contact.nickName
+      this.dataList[1].content = contact.status
       this.friendObj = {
         imgUrl: contact.headPortrait,
         lastContent: '',
@@ -86,10 +89,12 @@ export default {
         objectId: contact.id,
         objectName: contact.nickName
       }
+      // console.log(this.friendObj, 'friend')
       this.dialogVisible = true
     },
     handleClick() {
       this.setObjectChat(this.friendObj)
+      this.setCurrentId(this.friendObj.objectId)
       this.getMsgList(this.friendObj.objectId)
     },
     //获取聊天消息列表
